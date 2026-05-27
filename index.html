@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PDFMaster Pro</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#f5f7fb;
+color:#111827;
+}
+
+.hidden{
+display:none;
+}
+
+.active-tab{
+background:#dc2626;
+color:white;
+box-shadow:0 10px 25px rgba(220,38,38,0.25);
+}
+
+.main-btn{
+background:linear-gradient(135deg,#dc2626,#ef4444);
+transition:.3s;
+}
+
+.main-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 15px 35px rgba(220,38,38,0.25);
+}
+
+.card{
+background:white;
+border-radius:30px;
+box-shadow:0 10px 40px rgba(0,0,0,0.06);
+border:1px solid #edf2f7;
+}
+
+.dropzone{
+transition:.3s;
+border:2px dashed #fecaca;
+background:#fff;
+}
+
+.dropzone:hover{
+transform:translateY(-4px);
+border-color:#ef4444;
+box-shadow:0 20px 40px rgba(0,0,0,0.06);
+}
+
+.ad-box{
+background:white;
+border:2px dashed #fca5a5;
+border-radius:25px;
+}
+
+.small-btn{
+padding:10px 18px;
+border-radius:14px;
+font-weight:bold;
+transition:.3s;
+}
+
+.reset-btn{
+background:#e5e7eb;
+}
+
+.reset-btn:hover{
+background:#d1d5db;
+}
+
+.sticky-ads{
+position:sticky;
+top:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+
+<!-- HERO -->
+
+<div class="bg-gradient-to-r from-red-600 to-red-500 rounded-[40px] p-8 md:p-10 text-white relative overflow-hidden mb-8 shadow-2xl">
+
+<div class="absolute top-0 right-0 w-60 h-60 rounded-full bg-white/10"></div>
+
+<div class="absolute bottom-0 left-0 w-60 h-60 rounded-full bg-white/10"></div>
+
+<div class="relative z-10">
+
+<div class="inline-flex items-center gap-2 bg-white/15 px-4 py-2 rounded-full mb-4 text-sm font-bold border border-white/20">
+<i class="fa-solid fa-bolt"></i>
+FAST • SECURE • FREE
+</div>
+
+<h1 class="text-4xl md:text-5xl font-black leading-tight mb-3">
+PDFMaster Pro
+</h1>
+
+<p class="text-red-50 text-base max-w-2xl">
+Compress and merge PDFs instantly with modern UI and fast processing.
+</p>
+
+</div>
+
+</div>
+
+<!-- PRIVACY -->
+
+<div class="bg-white border border-red-100 rounded-2xl p-4 mb-8 shadow-sm">
+
+<div class="flex items-start gap-3">
+
+<div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center text-red-500 text-xl">
+<i class="fa-solid fa-shield-halved"></i>
+</div>
+
+<div>
+
+<h3 class="font-bold text-gray-800 mb-1">
+Privacy Focused
+</h3>
+
+<p class="text-gray-500 text-sm leading-relaxed">
+Your files are processed locally in your browser and are never uploaded to any server.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MAIN GRID -->
+
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+<!-- LEFT -->
+
+<div class="lg:col-span-3">
+
+<!-- NAV -->
+
+<div class="flex gap-4 mb-8">
+
+<button id="navCompress"
+class="active-tab px-6 py-3 rounded-2xl font-bold border border-gray-200 transition-all">
+Compress PDF
+</button>
+
+<button id="navMerge"
+class="px-6 py-3 rounded-2xl font-bold border border-gray-200 bg-white transition-all">
+Merge PDF
+</button>
+
+</div>
+
+<!-- COMPRESS -->
+
+<section id="compressSection">
+
+<div class="card p-8">
+
+<div class="mb-8">
+
+<h2 class="text-2xl font-black mb-2">
+AI PDF Compressor
+</h2>
+
+<p class="text-gray-500">
+Reduce PDF size while keeping quality balanced
+</p>
+
+</div>
+
+<div id="compressDropZone"
+class="dropzone rounded-[30px] p-12 text-center cursor-pointer">
+
+<i class="fa-solid fa-file-pdf text-5xl text-red-500 mb-5"></i>
+
+<h3 class="text-xl font-bold mb-3">
+Drop Your PDF Here
+</h3>
+
+<p class="text-gray-500 mb-5">
+Click or drag PDF file to upload
+</p>
+
+<button class="main-btn text-white px-8 py-3 rounded-2xl font-bold">
+Choose PDF
+</button>
+
+<input type="file"
+id="compressFileInput"
+accept=".pdf"
+class="hidden">
+
+</div>
+
+<div id="compressFileInfo"
+class="hidden mt-6 bg-gray-50 border border-gray-200 rounded-2xl p-5">
+
+<p class="font-bold" id="compressFileName"></p>
+
+<p class="text-gray-500 text-sm mt-1">
+Original Size:
+<span id="compressOriginalSize"></span>
+</p>
+
+</div>
+
+<div id="compressControls"
+class="hidden mt-8">
+
+<label class="font-bold mb-3 block">
+Compression Level:
+<span id="compressSliderText">50%</span>
+</label>
+
+<input type="range"
+id="compressSlider"
+min="10"
+max="90"
+value="50"
+class="w-full">
+
+<p class="mt-3 text-gray-500">
+Estimated Size:
+<span id="compressEstimatedSize"></span>
+</p>
+
+<div class="flex gap-3 flex-wrap mt-6">
+
+<button id="compressExecuteBtn"
+class="main-btn text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3">
+
+<i id="compressSpinner"
+class="fa-solid fa-spinner hidden"></i>
+
+<span id="compressBtnText">
+Compress PDF
+</span>
+
+</button>
+
+<button id="compressResetBtn"
+class="small-btn reset-btn">
+Reset
+</button>
+
+</div>
+
+</div>
+
+<div id="compressDownloadSection"
+class="hidden mt-8 bg-green-50 border border-green-200 rounded-3xl p-6 text-center">
+
+<h3 class="text-2xl font-black text-green-700 mb-3">
+Your PDF is Ready
+</h3>
+
+<p class="text-gray-600 mb-2">
+Final Size:
+<span id="compressFinalSize"></span>
+</p>
+
+<a id="compressDownloadBtn"
+class="inline-block mt-4 main-btn text-white px-8 py-4 rounded-2xl font-bold">
+
+⬇ Download Now
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- MERGE -->
+
+<section id="mergeSection" class="hidden">
+
+<div class="card p-8">
+
+<div class="mb-8">
+
+<h2 class="text-2xl font-black mb-2">
+Smart PDF Merger
+</h2>
+
+<p class="text-gray-500">
+Merge multiple PDFs into one file instantly
+</p>
+
+</div>
+
+<div id="mergeDropZone"
+class="dropzone rounded-[30px] p-12 text-center cursor-pointer">
+
+<i class="fa-solid fa-layer-group text-5xl text-red-500 mb-5"></i>
+
+<h3 class="text-xl font-bold mb-3">
+Select Multiple PDFs
+</h3>
+
+<p class="text-gray-500 mb-5">
+Upload multiple PDF files for merging
+</p>
+
+<button class="main-btn text-white px-8 py-3 rounded-2xl font-bold">
+Choose PDFs
+</button>
+
+<input type="file"
+id="mergeFileInput"
+multiple
+accept=".pdf"
+class="hidden">
+
+</div>
+
+<div id="mergeFileListSection"
+class="hidden mt-6">
+
+<div id="mergeFileList"
+class="space-y-4"></div>
+
+<div class="flex gap-3 flex-wrap mt-6">
+
+<button id="mergeAddMoreBtn"
+class="small-btn main-btn text-white">
+Add More PDFs
+</button>
+
+<button id="mergeExecuteBtn"
+class="main-btn text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3">
+
+<i id="mergeSpinner"
+class="fa-solid fa-spinner hidden"></i>
+
+<span id="mergeBtnText">
+Merge PDFs
+</span>
+
+</button>
+
+<button id="mergeResetBtn"
+class="small-btn reset-btn">
+Reset
+</button>
+
+</div>
+
+</div>
+
+<div id="mergeDownloadSection"
+class="hidden mt-8 bg-green-50 border border-green-200 rounded-3xl p-6 text-center">
+
+<h3 class="text-2xl font-black text-green-700 mb-3">
+Merged PDF Ready
+</h3>
+
+<p class="text-gray-600 mb-2">
+Final Size:
+<span id="mergeFinalSize"></span>
+</p>
+
+<a id="mergeDownloadBtn"
+class="inline-block mt-4 main-btn text-white px-8 py-4 rounded-2xl font-bold">
+
+⬇ Download Now
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+<!-- RIGHT ADS -->
+
+<div class="lg:col-span-1">
+
+<div class="sticky-ads space-y-5">
+
+<div class="ad-box h-32 flex items-center justify-center text-red-400 font-bold text-center">
+Google AdSense Banner
+</div>
+
+<div class="ad-box h-64 flex items-center justify-center text-red-400 font-bold text-center">
+Sidebar Advertisement
+</div>
+
+<div class="ad-box h-48 flex items-center justify-center text-red-400 font-bold text-center">
+Affiliate Promotion
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+// NAVIGATION
+
+const navCompress = document.getElementById('navCompress');
+const navMerge = document.getElementById('navMerge');
+
+const compressSection = document.getElementById('compressSection');
+const mergeSection = document.getElementById('mergeSection');
+
+navCompress.onclick = () => {
+
+navCompress.classList.add('active-tab');
+navMerge.classList.remove('active-tab');
+
+compressSection.classList.remove('hidden');
+mergeSection.classList.add('hidden');
+
+};
+
+navMerge.onclick = () => {
+
+navMerge.classList.add('active-tab');
+navCompress.classList.remove('active-tab');
+
+mergeSection.classList.remove('hidden');
+compressSection.classList.add('hidden');
+
+};
+
+// COMPRESS
+
+const compressDropZone = document.getElementById('compressDropZone');
+const compressFileInput = document.getElementById('compressFileInput');
+const compressFileInfo = document.getElementById('compressFileInfo');
+const compressControls = document.getElementById('compressControls');
+const compressFileName = document.getElementById('compressFileName');
+const compressOriginalSize = document.getElementById('compressOriginalSize');
+const compressSlider = document.getElementById('compressSlider');
+const compressSliderText = document.getElementById('compressSliderText');
+const compressEstimatedSize = document.getElementById('compressEstimatedSize');
+const compressExecuteBtn = document.getElementById('compressExecuteBtn');
+const compressSpinner = document.getElementById('compressSpinner');
+const compressBtnText = document.getElementById('compressBtnText');
+const compressDownloadSection = document.getElementById('compressDownloadSection');
+const compressDownloadBtn = document.getElementById('compressDownloadBtn');
+const compressFinalSize = document.getElementById('compressFinalSize');
+const compressResetBtn = document.getElementById('compressResetBtn');
+
+let activeCompressFile = null;
+
+compressDropZone.onclick = () => compressFileInput.click();
+
+compressFileInput.onchange = (e) => {
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+activeCompressFile = file;
+
+compressFileInfo.classList.remove('hidden');
+compressControls.classList.remove('hidden');
+
+compressFileName.textContent = file.name;
+
+compressOriginalSize.textContent =
+`${(file.size/1024).toFixed(2)} KB`;
+
+updateEstimate();
+
+};
+
+function updateEstimate(){
+
+if(!activeCompressFile) return;
+
+const level = parseInt(compressSlider.value);
+
+const estimated =
+activeCompressFile.size *
+(1-(level*0.65/100));
+
+compressEstimatedSize.textContent =
+`${(estimated/1024).toFixed(2)} KB`;
+
+}
+
+compressSlider.oninput = () => {
+
+compressSliderText.textContent =
+`${compressSlider.value}%`;
+
+updateEstimate();
+
+};
+
+compressResetBtn.onclick = () => {
+
+compressFileInput.value = '';
+activeCompressFile = null;
+
+compressFileInfo.classList.add('hidden');
+compressControls.classList.add('hidden');
+compressDownloadSection.classList.add('hidden');
+
+};
+
+compressExecuteBtn.onclick = async () => {
+
+if(!activeCompressFile){
+
+alert('Upload PDF First');
+
+return;
+
+}
+
+compressExecuteBtn.disabled = true;
+
+compressSpinner.classList.remove('hidden');
+compressSpinner.classList.add('animate-spin');
+
+compressBtnText.textContent = 'Compressing...';
+
+try{
+
+const fileBytes =
+await activeCompressFile.arrayBuffer();
+
+const pdf =
+await pdfjsLib.getDocument({
+data:fileBytes
+}).promise;
+
+const newPdf =
+await PDFLib.PDFDocument.create();
+
+const level =
+parseInt(compressSlider.value);
+
+const quality =
+Math.max(0.3,1-(level/100));
+
+const scale =
+Math.max(0.5,1-(level/180));
+
+for(let i=1;i<=pdf.numPages;i++){
+
+const page =
+await pdf.getPage(i);
+
+const viewport =
+page.getViewport({scale});
+
+const canvas =
+document.createElement('canvas');
+
+const context =
+canvas.getContext('2d');
+
+canvas.width = viewport.width;
+canvas.height = viewport.height;
+
+await page.render({
+canvasContext:context,
+viewport
+}).promise;
+
+const imageData =
+canvas.toDataURL(
+'image/jpeg',
+quality
+);
+
+const jpgImage =
+await newPdf.embedJpg(imageData);
+
+const pdfPage =
+newPdf.addPage([
+viewport.width,
+viewport.height
+]);
+
+pdfPage.drawImage(jpgImage,{
+x:0,
+y:0,
+width:viewport.width,
+height:viewport.height
+});
+
+}
+
+const compressedBytes =
+await newPdf.save();
+
+const compressedBlob =
+new Blob([compressedBytes],{
+type:'application/pdf'
+});
+
+const url =
+URL.createObjectURL(
+compressedBlob
+);
+
+compressDownloadBtn.href = url;
+
+compressDownloadBtn.download =
+`compressed-${activeCompressFile.name}`;
+
+compressFinalSize.textContent =
+`${(compressedBlob.size/1024).toFixed(2)} KB`;
+
+compressDownloadSection.classList.remove('hidden');
+
+compressDownloadSection.scrollIntoView({
+behavior:'smooth'
+});
+
+}catch(error){
+
+console.error(error);
+
+alert('Compression Failed');
+
+}finally{
+
+compressExecuteBtn.disabled = false;
+
+compressSpinner.classList.add('hidden');
+
+compressBtnText.textContent =
+'Compress PDF';
+
+}
+
+};
+
+compressDownloadBtn.onclick = () => {
+
+setTimeout(() => {
+
+compressResetBtn.click();
+
+},1000);
+
+};
+
+// MERGE
+
+const mergeDropZone = document.getElementById('mergeDropZone');
+const mergeFileInput = document.getElementById('mergeFileInput');
+const mergeFileListSection = document.getElementById('mergeFileListSection');
+const mergeFileList = document.getElementById('mergeFileList');
+const mergeAddMoreBtn = document.getElementById('mergeAddMoreBtn');
+const mergeExecuteBtn = document.getElementById('mergeExecuteBtn');
+const mergeSpinner = document.getElementById('mergeSpinner');
+const mergeBtnText = document.getElementById('mergeBtnText');
+const mergeDownloadSection = document.getElementById('mergeDownloadSection');
+const mergeDownloadBtn = document.getElementById('mergeDownloadBtn');
+const mergeFinalSize = document.getElementById('mergeFinalSize');
+const mergeResetBtn = document.getElementById('mergeResetBtn');
+
+let selectedMergeFiles = [];
+
+mergeDropZone.onclick = () => mergeFileInput.click();
+
+mergeAddMoreBtn.onclick = () => mergeFileInput.click();
+
+mergeFileInput.onchange = (e) => {
+
+for(let file of e.target.files){
+
+selectedMergeFiles.push(file);
+
+}
+
+renderMergeList();
+
+};
+
+function renderMergeList(){
+
+if(selectedMergeFiles.length === 0){
+
+mergeFileListSection.classList.add('hidden');
+
+return;
+
+}
+
+mergeFileListSection.classList.remove('hidden');
+
+mergeFileList.innerHTML = '';
+
+selectedMergeFiles.forEach((file,index)=>{
+
+const row =
+document.createElement('div');
+
+row.className =
+'bg-gray-50 border border-gray-200 rounded-2xl p-4 flex justify-between items-center';
+
+row.innerHTML = `
+<div>
+<p class="font-bold">${file.name}</p>
+<p class="text-sm text-gray-500">
+${(file.size/1024).toFixed(2)} KB
+</p>
+</div>
+
+<button
+onclick="removeFile(${index})"
+class="text-red-500 text-xl">
+<i class="fa-solid fa-trash"></i>
+</button>
+`;
+
+mergeFileList.appendChild(row);
+
+});
+
+}
+
+window.removeFile = function(index){
+
+selectedMergeFiles.splice(index,1);
+
+renderMergeList();
+
+};
+
+mergeResetBtn.onclick = () => {
+
+selectedMergeFiles = [];
+
+mergeFileInput.value = '';
+
+mergeFileList.innerHTML = '';
+
+mergeFileListSection.classList.add('hidden');
+
+mergeDownloadSection.classList.add('hidden');
+
+};
+
+mergeExecuteBtn.onclick = async () => {
+
+if(selectedMergeFiles.length < 2){
+
+alert('Select at least 2 PDFs');
+
+return;
+
+}
+
+mergeExecuteBtn.disabled = true;
+
+mergeSpinner.classList.remove('hidden');
+mergeSpinner.classList.add('animate-spin');
+
+mergeBtnText.textContent = 'Merging...';
+
+try{
+
+const mergedPdf =
+await PDFLib.PDFDocument.create();
+
+for(const file of selectedMergeFiles){
+
+const bytes =
+await file.arrayBuffer();
+
+const pdf =
+await PDFLib.PDFDocument.load(bytes);
+
+const copiedPages =
+await mergedPdf.copyPages(
+pdf,
+pdf.getPageIndices()
+);
+
+copiedPages.forEach(page => {
+
+mergedPdf.addPage(page);
+
+});
+
+}
+
+const mergedBytes =
+await mergedPdf.save();
+
+const mergedBlob =
+new Blob([mergedBytes],{
+type:'application/pdf'
+});
+
+const mergedURL =
+URL.createObjectURL(
+mergedBlob
+);
+
+mergeDownloadBtn.href = mergedURL;
+
+mergeDownloadBtn.download =
+'merged-document.pdf';
+
+mergeFinalSize.textContent =
+`${(mergedBlob.size/1024).toFixed(2)} KB`;
+
+mergeDownloadSection.classList.remove('hidden');
+
+mergeDownloadSection.scrollIntoView({
+behavior:'smooth'
+});
+
+}catch(error){
+
+console.error(error);
+
+alert('Merge Failed');
+
+}finally{
+
+mergeExecuteBtn.disabled = false;
+
+mergeSpinner.classList.add('hidden');
+
+mergeBtnText.textContent =
+'Merge PDFs';
+
+}
+
+};
+
+mergeDownloadBtn.onclick = () => {
+
+setTimeout(() => {
+
+mergeResetBtn.click();
+
+},1000);
+
+};
+
+</script>
+
+</body>
+</html>
